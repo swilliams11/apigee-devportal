@@ -1,0 +1,140 @@
+swagger: "2.0"
+info:
+  version: "2.0"
+  title: Swagger API
+host: org-env.apigee.net
+basePath: /openweather/v2
+schemes:
+  - http
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+  - application/xml
+  - application/html
+paths:
+  /weather:
+    x-swagger-router-controller: weather
+    get:
+      description: Returns weather for a query location (JSON by default)
+      operationId: weather
+      parameters:
+        - name: apikey
+          in: query
+          description: api key
+          required: true
+          type: string
+        - name: q
+          in: query
+          description: query parameter
+          required: false
+          type: string
+        - name: lat
+          in: query
+          description: latitude
+          required: false
+          type: number
+          format: double
+        - name: lon
+          in: query
+          description: longitude
+          required: false
+          type: number
+          format: double
+        - name: type # new item added for v2
+          in: query
+          description: xml, html
+          required: false
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/WeatherResponse"
+          examples:
+            examples:
+              application/json:
+                {
+                 "coord":{
+                    "lon":145.77,
+                    "lat":-16.92
+                 },
+                 "weather":[
+                    {
+                       "id":803,
+                       "main":"Clouds",
+                       "description":"broken clouds",
+                       "icon":"04n"
+                    }
+                 ],
+                 "base":"cmc stations",
+                 "main":{
+                    "temp":293.25,
+                    "pressure":1019,
+                    "humidity":83,
+                    "temp_min":289.82,
+                    "temp_max":295.37
+                 },
+                 "wind":{
+                    "speed":5.1,
+                    "deg":150
+                 },
+                 "clouds":{
+                    "all":75
+                 },
+                 "rain":{
+                    "3h":3
+                 },
+                 "dt":1435658272,
+                 "sys":{
+                    "type":1,
+                    "id":8166,
+                    "message":0.0166,
+                    "country":"AU",
+                    "sunrise":1435610796,
+                    "sunset":1435650870
+                 },
+                 "id":2172797,
+                 "name":"Cairns",
+                 "cod":200}
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+definitions:
+  weather:
+    properties:
+      id:
+        type: string
+        description: id
+      main:
+        type: string
+      description:
+        type: string
+      icon:
+        type: string
+  WeatherResponse:
+    properties:
+      coord:
+        $ref: '#/definitions/coord'
+      base:
+        type: string
+        description: base
+      weather:
+        type: array
+        items:
+          $ref: '#/definitions/weather'
+
+  coord:
+    properties:
+      lon:
+        type: number
+      lat:
+        type: number
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
